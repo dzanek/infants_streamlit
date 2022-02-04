@@ -1,0 +1,34 @@
+name	taxonomy_id	taxonomy_lvl	kraken_assigned_reads	added_reads	new_est_reads	fraction_total_reads
+Bacteroidetes	976	P	5937512	-611381	5326131	0.65813
+Chlorobi	1090	P	133	5	138	0.00002
+Balneolaeota	1936987	P	21	0	21	0.00000
+Ignavibacteriae	1134404	P	11	0	11	0.00000
+Gemmatimonadetes	142182	P	34	0	34	0.00000
+Fibrobacteres	65842	P	33	0	33	0.00000
+Firmicutes	1239	P	1480504	-4035	1476469	0.18244
+Actinobacteria	201174	P	1019843	10431	1030274	0.12731
+Cyanobacteria	1117	P	910	-48	862	0.00011
+Tenericutes	544448	P	342	-91	251	0.00003
+Deinococcus-Thermus	1297	P	285	-11	274	0.00003
+Chloroflexi	200795	P	177	-25	152	0.00002
+Armatimonadetes	67819	P	16	0	16	0.00000
+Proteobacteria	1224	P	224240	22109	246349	0.03044
+Spirochaetes	203691	P	902	-19	883	0.00011
+Verrucomicrobia	74201	P	475	-16	459	0.00006
+Planctomycetes	203682	P	193	-1	192	0.00002
+Chlamydiae	204428	P	22	-2	20	0.00000
+Kiritimatiellaeota	134625	P	21	2	23	0.00000
+Lentisphaerae	256845	P	21	0	21	0.00000
+Fusobacteria	32066	P	677	3	680	0.00008
+Acidobacteria	57723	P	93	0	93	0.00001
+Synergistetes	508458	P	89	0	89	0.00001
+Thermotogae	200918	P	87	-18	69	0.00001
+Aquificae	200783	P	77	-36	41	0.00001
+Deferribacteres	200930	P	76	-10	66	0.00001
+Candidatus Bipolaricaulota	67810	P	18	-18	0	0.00000
+Candidatus Saccharibacteria	95818	P	12	1	13	0.00000
+Nitrospirae	40117	P	58	0	58	0.00001
+Chordata	7711	P	6673	111	6784	0.00084
+Crenarchaeota	28889	P	1812	0	1812	0.00022
+Thaumarchaeota	651137	P	8	-5	3	0.00000
+Euryarchaeota	28890	P	461	-28	433	0.00005

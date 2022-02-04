@@ -1,0 +1,17 @@
+name	taxonomy_id	taxonomy_lvl	kraken_assigned_reads	added_reads	new_est_reads	fraction_total_reads
+Actinobacteria	201174	P	4450295	9521	4459816	0.63088
+Firmicutes	1239	P	1378772	-36564	1342208	0.18987
+Tenericutes	544448	P	108	-10	98	0.00001
+Cyanobacteria	1117	P	72	-30	42	0.00001
+Chloroflexi	200795	P	14	-4	10	0.00000
+Deinococcus-Thermus	1297	P	11	-1	10	0.00000
+Proteobacteria	1224	P	962035	51426	1013461	0.14336
+Bacteroidetes	976	P	3810	-286	3524	0.00050
+Verrucomicrobia	74201	P	1497	0	1497	0.00021
+Planctomycetes	203682	P	9	0	9	0.00000
+Spirochaetes	203691	P	77	0	77	0.00001
+Nitrospirae	40117	P	12	0	12	0.00000
+Thermotogae	200918	P	8	-6	2	0.00000
+Chordata	7711	P	9215	18	9233	0.00131
+Crenarchaeota	28889	P	136	-1	135	0.00002
+Euryarchaeota	28890	P	26	238983	239009	0.03381
