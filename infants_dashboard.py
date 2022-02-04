@@ -122,8 +122,8 @@ def plot_barplot(data):
     phylum_table_kraken.T.sort_values(by=['Actinobacteria','Bacteroidetes'],ascending=[False,False]).plot(ax=phylum_bar_kraken, kind="bar", stacked=True)
     phylum_bar_kraken.legend(list(phylum_table_kraken.index)[:5],loc=1)
     phylum_bar_kraken.set_xticklabels([country_map[i] for i in phylum_table_kraken.columns])
-    phylum_bar_kraken.set_xlabel('Kraj pochodzenia próbki')
-    phylum_bar_kraken.set_ylabel('Proporcja danego typu bakterii w próbce')
+    phylum_bar_kraken.set_xlabel('Country of origin')
+    phylum_bar_kraken.set_ylabel('Fraction of taxa in the system')
     return fig
 
 def plot_pca(data):
@@ -135,8 +135,8 @@ def plot_pca(data):
     fig, ax = plt.subplots()
     fig, ax = plt.subplots()
 #    ax=fig.add_axes([0,0,1,1])
-    ax.scatter(pcagenus.components_[0][len(rus_ids):], pcagenus.components_[1][len(rus_ids):],linewidths=2,edgecolors='#666666',s=300,color=sns.color_palette()[0],label='Probki Rosyjskie')
-    ax.scatter(pcagenus.components_[0][:len(rus_ids)], pcagenus.components_[1][:len(rus_ids)],linewidths=2,edgecolors='#666666',s=300,color=sns.color_palette()[1],label='Probki Fińskie')
+    ax.scatter(pcagenus.components_[0][len(rus_ids):], pcagenus.components_[1][len(rus_ids):],linewidths=2,edgecolors='#666666',s=300,color=sns.color_palette()[0],label='Russia')
+    ax.scatter(pcagenus.components_[0][:len(rus_ids)], pcagenus.components_[1][:len(rus_ids)],linewidths=2,edgecolors='#666666',s=300,color=sns.color_palette()[1],label='Finland')
 
     confidence_ellipse(pcagenus.components_[0][len(rus_ids):], pcagenus.components_[1][len(rus_ids):],ax,n_std=3,edgecolor=sns.color_palette()[0])
     confidence_ellipse(pcagenus.components_[0][:len(rus_ids)], pcagenus.components_[1][:len(rus_ids)],ax,n_std=3,edgecolor=sns.color_palette()[1])
@@ -186,24 +186,24 @@ def build_model(data):
 
 
     ax.plot([0, 1], [0, 1], linestyle='--', lw=2, color=sns.color_palette()[1],
-            label='Model losowy', alpha=.8)
+            label='Random', alpha=.8)
 
     mean_tpr = np.mean(tprs, axis=0)
     mean_tpr[-1] = 1.0
     mean_auc = auc(mean_fpr, mean_tpr)
     std_auc = np.std(aucs)
     ax.plot(mean_fpr, mean_tpr, color=sns.color_palette()[0],
-            label=r'Średnie ROC (AUC = %0.2f $\pm$ %0.2f)' % (mean_auc, std_auc),
+            label=r'Average ROC (AUC = %0.2f $\pm$ %0.2f)' % (mean_auc, std_auc),
             lw=2, alpha=.8)
 
     std_tpr = np.std(tprs, axis=0)
     tprs_upper = np.minimum(mean_tpr + std_tpr, 1)
     tprs_lower = np.maximum(mean_tpr - std_tpr, 0)
     ax.fill_between(mean_fpr, tprs_lower, tprs_upper, color='grey', alpha=.2,
-                    label=r'$\pm$ 1 odch. standardowe')
+                    label=r'$\pm$ 1 std. deviation')
 
-    ax.set_xlabel('1 - specyficzność')
-    ax.set_ylabel('czułość')
+    ax.set_xlabel('1 - specificity')
+    ax.set_ylabel('sensitivity')
 
     ax.set(xlim=[-0.05, 1.05], ylim=[-0.05, 1.05],
            title="")
@@ -223,7 +223,7 @@ def get_top_features(classifier, features):
     ax.barh(pos[-5:], feature_importance[sorted_idx][-5:], align='center', )
     ax.set_yticks(pos[-5:])
     ax.set_yticklabels(np.array(features)[sorted_idx][-5:], fontsize=16)
-    ax.set_xlabel('Pięć cech o najwyższym wkładzie w predykcję')
+    ax.set_xlabel('Top 5 features')
     #plt.ylim(39,)
     plt.tight_layout()   
     return fig
