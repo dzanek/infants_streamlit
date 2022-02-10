@@ -1,9 +1,9 @@
 import streamlit as st
-import pandas as pd 
+import pandas as pd
 
 import matplotlib.pyplot as plt
 import matplotlib
-import seaborn as sns 
+import seaborn as sns
 
 import sklearn as sk
 import numpy as np
@@ -89,7 +89,7 @@ def load_data(tax_level='P'):
         sample = pd.read_table(f'bracken_{tax_level}/{samples_map[i]}.bracken',index_col=0)
         sample = sample[['fraction_total_reads']]
         sample.columns = [i]
-        if len(taxonomy_dataframe_P.columns) == 0: 
+        if len(taxonomy_dataframe_P.columns) == 0:
             print('....')
             taxonomy_dataframe_P = sample.copy()
         else:
@@ -109,7 +109,7 @@ def scale_dataframe(taxonomy_dataframe_P):
     cols = taxonomy_dataframe_P.columns
     ind = taxonomy_dataframe_P.index
     scaler = StandardScaler()
-    taxonomy_dataframe_P = scaler.fit_transform(taxonomy_dataframe_P) 
+    taxonomy_dataframe_P = scaler.fit_transform(taxonomy_dataframe_P)
     taxonomy_dataframe_P = pd.DataFrame(taxonomy_dataframe_P)
     taxonomy_dataframe_P.columns = cols
     taxonomy_dataframe_P.index = ind
@@ -119,7 +119,8 @@ def plot_barplot(data):
     fig, phylum_bar_kraken = plt.subplots()
     phylum_table_kraken = data
     #phylum_table_kraken
-    phylum_table_kraken.T.sort_values(by=['Actinobacteria','Bacteroidetes'],ascending=[False,False]).plot(ax=phylum_bar_kraken, kind="bar", stacked=True)
+    phylum_table_kraken = phylum_table_kraken.T.sort_values(by=['Actinobacteria','Bacteroidetes'],ascending=[False,False]).T
+    phylum_table_kraken.T.plot(ax=phylum_bar_kraken, kind="bar", stacked=True)
     phylum_bar_kraken.legend(list(phylum_table_kraken.index)[:5],loc=1)
     phylum_bar_kraken.set_xticklabels([country_map[i] for i in phylum_table_kraken.columns])
     phylum_bar_kraken.set_xlabel('Country of origin')
@@ -144,13 +145,13 @@ def plot_pca(data):
     ax.legend()
     ax.set_xlabel(f'PC1 {round(100*var1,2)}%')
     ax.set_ylabel(f'PC2 {round(100*var2,2)}%')
-    plt.tight_layout()   
+    plt.tight_layout()
     return fig
 
 def build_model(data):
     phylum_feature_table = data.T
     phylum_feature_table['location'] = phylum_feature_table.index.map(lambda x: 1 if country_map[x] == 'Rosja' else 0)
-    
+
     from scipy import interp
 
     from sklearn.datasets import make_classification
@@ -159,7 +160,7 @@ def build_model(data):
     from sklearn.metrics import roc_curve
     from sklearn.metrics import plot_roc_curve
     from sklearn.metrics import auc
-    
+
     features = list(phylum_feature_table.columns[:-1])
     target = phylum_feature_table.columns[-1]
     X, y = np.array(phylum_feature_table[features]), np.array(phylum_feature_table[target])
@@ -225,9 +226,9 @@ def get_top_features(classifier, features):
     ax.set_yticklabels(np.array(features)[sorted_idx][-5:], fontsize=16)
     ax.set_xlabel('Top 5 features')
     #plt.ylim(39,)
-    plt.tight_layout()   
+    plt.tight_layout()
     return fig
-    
+
 
 
 data_load_state = st.text('Loading data...')
