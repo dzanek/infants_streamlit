@@ -5,3 +5,4 @@ scipy
 seaborn
 requests
 BeautifulSoup4
+lxml
