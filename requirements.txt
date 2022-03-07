@@ -3,3 +3,5 @@ sklearn
 numpy
 scipy
 seaborn
+requests
+BeautifulSoup
