@@ -4,4 +4,4 @@ numpy
 scipy
 seaborn
 requests
-BeautifulSoup
+BeautifulSoup4
