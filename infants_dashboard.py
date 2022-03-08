@@ -86,12 +86,14 @@ SRR4305396'''.strip())
     print(samples_b)
 #st.success('Treatment loaded!')
 
+tax_rank = st.selectbox('Select taxonomy rank to work with', ('phylum','class','order','family','genus','species'))
+
 group_map = {i:'Control' for i in samples_a}
 group_map.update({i:'Treatment' for i in samples_b})
 
-data = get_data_table(samples_a,samples_b)
+data = get_data_table(samples_a,samples_b,tax_rank)
 st.subheader('Raw data')
-st.write(data)
+st.write(data.loc[data.mean(axis=1) > 0.1])
 
 st.subheader('Taxonomy profile of the cohort')
 st.pyplot(plot_barplot(data.iloc[:-1],group_map))

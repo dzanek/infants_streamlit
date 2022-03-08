@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import numpy as np
 
@@ -11,16 +13,27 @@ import matplotlib.transforms as transforms
 import seaborn as sns 
 
 import streamlit as st
-    
+
+#@st.cache
+def get_xml(run_id):
+    if not os.path.isfile(f'./cache/{run_id}.xml'):
+        url = f'https://trace.ncbi.nlm.nih.gov/Traces/sra/?run={run_id}&retmode=xml'
+        req = requests.get(url)
+        print(url)
+        with open(f'./cache/{run_id}.xml','wb') as dump:
+            dump.write(req.content)
+#        xml = req.content
+#    else:
+    xml = open(f'./cache/{run_id}.xml','rb')
+    Bs_data = BeautifulSoup(xml, "xml")
+    return Bs_data
+
 def build_taxonomy_table(samples,target,rank):
     ''' '''
     taxonomy_table = pd.DataFrame()
     for run_id in samples:
         run_df = pd.DataFrame()
-        url = f'https://trace.ncbi.nlm.nih.gov/Traces/sra/?run={run_id}&retmode=xml'
-        req = requests.get(url)
-        print(url)
-        Bs_data = BeautifulSoup(req.content, "xml")
+        Bs_data = get_xml(run_id)
         for i in Bs_data.find('RUN').find('tax_analysis').find_all('taxon', {'rank':rank}):
             if i.get('rank') != rank:
                 continue
@@ -32,10 +45,10 @@ def build_taxonomy_table(samples,target,rank):
     taxonomy_table.loc['target'] = target    
     return taxonomy_table
 
-@st.cache
 def get_data_table(samples_a=["SRR15021134","SRR15021145"], samples_b=["SRR15021131","SRR15021132"], rank='phylum'):
     ''' build data table from two lists of sra accesions '''
-    
+    if not os.path.isdir('./cache'):
+        os.mkdir('./cache')
     taxonomy_table = pd.merge(left=build_taxonomy_table(samples_a,0,rank=rank),
                               right=build_taxonomy_table(samples_b,1,rank=rank),
                               how='outer', left_index=True, right_index=True)
