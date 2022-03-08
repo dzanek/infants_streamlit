@@ -28,6 +28,11 @@ def get_xml(run_id):
     Bs_data = BeautifulSoup(xml, "xml")
     return Bs_data
 
+def order_df(df,ascending=False):
+    df['mean'] = df.apply(lambda x: np.average(x), axis=1)
+    df.sort_values(by='mean',ascending=ascending,inplace=True)
+    return df[df.columns[:-1]]
+
 def build_taxonomy_table(samples,target,rank):
     ''' '''
     taxonomy_table = pd.DataFrame()
@@ -42,6 +47,7 @@ def build_taxonomy_table(samples,target,rank):
             run_df = run_df.append(tax_df)
         taxonomy_table = pd.merge(left=taxonomy_table, right=run_df, how='outer', left_index=True, right_index=True)
     taxonomy_table = taxonomy_table/taxonomy_table.sum()
+    #taxonomy_table = order_df(taxonomy_table)
     taxonomy_table.loc['target'] = target    
     return taxonomy_table
 
@@ -54,7 +60,9 @@ def get_data_table(samples_a=["SRR15021134","SRR15021145"], samples_b=["SRR15021
                               how='outer', left_index=True, right_index=True)
     taxonomy_table.fillna(0.0,inplace=True)
     taxonomy_table = taxonomy_table.loc[(taxonomy_table == 0).mean(axis=1) < 0.9]
-    return taxonomy_table
+    ordered_table = order_df(taxonomy_table.iloc[:-1])
+    ordered_table.loc['target'] = taxonomy_table.loc['target']
+    return ordered_table
 
 def confidence_ellipse(x, y, ax, n_std=3.0, facecolor='none', **kwargs):
     """
@@ -145,6 +153,7 @@ def scale_dataframe(taxonomy_dataframe_P):
 
 def plot_barplot(data,group_map):
     fig, taxonomy_bar = plt.subplots()
+    print(data)
     #phylum_table_kraken = data
     #phylum_table_kraken
     #data = data.T.sort_values(by=['Actinobacteria','Bacteroidetes'],ascending=[False,False]).T
