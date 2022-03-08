@@ -60,7 +60,7 @@ SRR4408059
     print(samples_a)
 #st.success('Control loaded!')
 
-with st.spinner("Loading Treatment Samples"):    
+with st.spinner("Loading Treatment Samples"):
     col2.subheader('Input treatment samples')
     samples_b = col2.text_area('SRA run ID (newline each)', '''SRR4305272
 SRR4305403
@@ -93,7 +93,7 @@ group_map.update({i:'Treatment' for i in samples_b})
 
 data = get_data_table(samples_a,samples_b,tax_rank)
 st.subheader('Raw data')
-st.write(data.loc[data.mean(axis=1) > 0.1])
+st.write(data.loc[data.mean(axis=1) > 0.01])
 
 st.subheader('Taxonomy profile of the cohort')
 st.pyplot(plot_barplot(data.iloc[:-1],group_map))
