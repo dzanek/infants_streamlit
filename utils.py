@@ -60,7 +60,7 @@ def get_data_table(samples_a=["SRR15021134","SRR15021145"], samples_b=["SRR15021
                               how='outer', left_index=True, right_index=True)
     taxonomy_table.fillna(0.0,inplace=True)
     taxonomy_table = taxonomy_table.loc[(taxonomy_table == 0).mean(axis=1) < 0.9]
-    ordered_table = order_df(taxonomy_table.iloc[:-1])
+    ordered_table = order_df(taxonomy_table.loc[[i for i in taxonomy_table.index if i!= 'target']])
     ordered_table.loc['target'] = taxonomy_table.loc['target']
     return ordered_table
 
