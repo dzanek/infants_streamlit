@@ -41,20 +41,7 @@ with st.spinner("Loading Control Samples"):
 SRR4305202
 SRR4408106
 SRR4305207
-SRR4408087
-SRR4408201
-SRR4408082
-SRR4408085
-SRR4408049
-SRR4408188
-SRR4408152
-SRR4305204
-SRR4408203
-SRR4408123
-SRR4305334
-SRR4305376
-SRR4408149
-SRR4408059
+SRR15021134
          '''.strip())
     samples_a = samples_a.split()
     print(samples_a)
@@ -66,38 +53,34 @@ with st.spinner("Loading Treatment Samples"):
 SRR4305403
 SRR4305496
 SRR4305406
-SRR4305488
-SRR4305368
-SRR4305407
-SRR4305409
-SRR4305356
-SRR4305286
-SRR4305515
-SRR4305483
-SRR4305414
-SRR4305508
-SRR4305032
-SRR4305361
-SRR4305408
-SRR4305285
-SRR4305175
-SRR4305396'''.strip())
+SRR15021131
+'''.strip())
     samples_b = samples_b.split()
     print(samples_b)
-#st.success('Treatment loaded!')
+print('Treatment loaded!')
 
 tax_rank = st.selectbox('Select taxonomy rank to work with', ('phylum','class','order','family','genus','species'))
 
 group_map = {i:'Control' for i in samples_a}
 group_map.update({i:'Treatment' for i in samples_b})
-
+print('groups mapped')
 data = get_data_table(samples_a,samples_b,tax_rank)
+print('got data table')
 st.subheader('Raw data')
 st.write(data.loc[data.mean(axis=1) > 0.01])
+print('after DF print')
 
 st.subheader('Taxonomy profile of the cohort')
 st.pyplot(plot_barplot(data.iloc[:-1],group_map))
 st.markdown('The stacked bar plot sorted by the most abundant taxa in the cohort.')
+
+
+to_plot = st.selectbox('Choose taxa to inspect', data.index, )
+st.pyplot(box_taxa(data,to_plot)) #sns.boxplot(data=data.T, x='target',y=to_plot)
+s,p = ss.mannwhitneyu(data.T.loc[data.T['target'] == 0][to_plot],
+                   data.T.loc[data.T['target'] == 1][to_plot])
+st.write(f'p-value: {p}')
+
 
 st.subheader('PCA')
 st.pyplot(plot_pca(data.iloc[:-1], len(samples_a)))

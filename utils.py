@@ -1,4 +1,5 @@
 import os
+import tqdm
 
 import pandas as pd
 import numpy as np
@@ -33,10 +34,13 @@ def order_df(df,ascending=False):
     df.sort_values(by='mean',ascending=ascending,inplace=True)
     return df[df.columns[:-1]]
 
+@st.cache
 def build_taxonomy_table(samples,target,rank):
-    ''' '''
+    ''' docstring place '''
+
     taxonomy_table = pd.DataFrame()
-    for run_id in samples:
+    for run_id in tqdm.tqdm(samples):
+        print(f'Building based on {run_id}')
         run_df = pd.DataFrame()
         Bs_data = get_xml(run_id)
         for i in Bs_data.find('RUN').find('tax_analysis').find_all('taxon', {'rank':rank}):
@@ -51,18 +55,22 @@ def build_taxonomy_table(samples,target,rank):
     taxonomy_table.loc['target'] = target    
     return taxonomy_table
 
+@st.cache
 def get_data_table(samples_a=["SRR15021134","SRR15021145"], samples_b=["SRR15021131","SRR15021132"], rank='phylum'):
     ''' build data table from two lists of sra accesions '''
     if not os.path.isdir('./cache'):
         os.mkdir('./cache')
+    print('Start building taxonomy table')
     taxonomy_table = pd.merge(left=build_taxonomy_table(samples_a,0,rank=rank),
                               right=build_taxonomy_table(samples_b,1,rank=rank),
                               how='outer', left_index=True, right_index=True)
+    print('Done building taxonomy table')
     taxonomy_table.fillna(0.0,inplace=True)
     taxonomy_table = taxonomy_table.loc[(taxonomy_table == 0).mean(axis=1) < 0.9]
     ordered_table = order_df(taxonomy_table.loc[[i for i in taxonomy_table.index if i!= 'target']])
     ordered_table.loc['target'] = taxonomy_table.loc['target']
     return ordered_table
+
 
 def confidence_ellipse(x, y, ax, n_std=3.0, facecolor='none', **kwargs):
     """
@@ -117,6 +125,7 @@ def confidence_ellipse(x, y, ax, n_std=3.0, facecolor='none', **kwargs):
     ellipse.set_transform(transf + ax.transData)
     return ax.add_patch(ellipse)
 
+@st.cache
 def load_data(all_ids, samples_map, tax_level='P'):
     from sklearn.preprocessing import StandardScaler
     taxonomy_dataframe_P = pd.DataFrame()
@@ -141,6 +150,7 @@ def load_data(all_ids, samples_map, tax_level='P'):
     print(len(taxonomy_dataframe_P))
     return taxonomy_dataframe_P
 
+@st.cache
 def scale_dataframe(taxonomy_dataframe_P):
     cols = taxonomy_dataframe_P.columns
     ind = taxonomy_dataframe_P.index
@@ -151,19 +161,26 @@ def scale_dataframe(taxonomy_dataframe_P):
     taxonomy_dataframe_P.index = ind
     return taxonomy_dataframe_P
 
+@st.cache
 def plot_barplot(data,group_map):
     fig, taxonomy_bar = plt.subplots()
-    print(data)
+    print('will plot')
     #phylum_table_kraken = data
     #phylum_table_kraken
     #data = data.T.sort_values(by=['Actinobacteria','Bacteroidetes'],ascending=[False,False]).T
     data.T.plot(ax=taxonomy_bar, kind="bar", stacked=True)
+    print('plotted!')
     taxonomy_bar.legend(list(data.index)[:5],loc=1)
     taxonomy_bar.set_xticklabels([group_map[i] for i in data.columns])
     taxonomy_bar.set_xlabel('Samples')
     taxonomy_bar.set_ylabel('Fraction of taxa in the system')
     return fig
 
+def box_taxa(data,to_plot):
+    fig, taxonomy_box = plt.subplots()
+    sns.boxplot(data=data.T, x='target', y=to_plot)
+    return fig
+#@st.cache
 def plot_pca(data,samples_a):
     from sklearn.decomposition import PCA
     from sklearn.preprocessing import StandardScaler
@@ -185,6 +202,7 @@ def plot_pca(data,samples_a):
     plt.tight_layout()
     return fig
 
+#@st.cache
 def build_model(data,group_map):
     from scipy import interp
     from sklearn.datasets import make_classification
@@ -248,6 +266,7 @@ def build_model(data,group_map):
 
     return fig, classifier, features
 
+#@st.cache
 def get_top_features(classifier, features):
 
     feature_importance = abs(classifier.coef_[0])
