@@ -34,7 +34,7 @@ def order_df(df,ascending=False):
     df.sort_values(by='mean',ascending=ascending,inplace=True)
     return df[df.columns[:-1]]
 
-@st.cache
+
 def build_taxonomy_table(samples,target,rank):
     ''' docstring place '''
 
@@ -125,30 +125,7 @@ def confidence_ellipse(x, y, ax, n_std=3.0, facecolor='none', **kwargs):
     ellipse.set_transform(transf + ax.transData)
     return ax.add_patch(ellipse)
 
-@st.cache
-def load_data(all_ids, samples_map, tax_level='P'):
-    from sklearn.preprocessing import StandardScaler
-    taxonomy_dataframe_P = pd.DataFrame()
-    for i in all_ids:
-        #print(taxonomy_dataframe_P)
-        sample = pd.read_table(f'bracken_{tax_level}/{samples_map[i]}.bracken',index_col=0)
-        sample = sample[['fraction_total_reads']]
-        sample.columns = [i]
-        if len(taxonomy_dataframe_P.columns) == 0:
-            print('....')
-            taxonomy_dataframe_P = sample.copy()
-        else:
-            taxonomy_dataframe_P = pd.merge(taxonomy_dataframe_P, sample[[i]], how='outer', suffixes=("", ""),left_index=True, right_index=True)
-    #taxonomy_dataframe_P['phylum'] = taxonomy_dataframe_P.index
-    taxonomy_dataframe_P.fillna(0.0,inplace=True)
-    taxonomy_dataframe_P.index.rename('phylum',inplace=True)
-    taxonomy_dataframe_P['mean'] = taxonomy_dataframe_P.apply(lambda x: np.average(x),axis=1)
-    taxonomy_dataframe_P.sort_values(by='mean',ascending=False,inplace=True)
-    print(len(taxonomy_dataframe_P))
-    taxonomy_dataframe_P.drop('mean',axis=1,inplace=True)
-    taxonomy_dataframe_P = taxonomy_dataframe_P.loc[(taxonomy_dataframe_P == 0.0).mean(axis=1) < 0.9]
-    print(len(taxonomy_dataframe_P))
-    return taxonomy_dataframe_P
+
 
 @st.cache
 def scale_dataframe(taxonomy_dataframe_P):
@@ -202,7 +179,7 @@ def plot_pca(data,samples_a):
     plt.tight_layout()
     return fig
 
-#@st.cache
+@st.cache
 def build_model(data,group_map):
     from scipy import interp
     from sklearn.datasets import make_classification
