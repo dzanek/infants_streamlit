@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 import matplotlib.transforms as transforms
 
-import seaborn as sns 
+import seaborn as sns
 
 import streamlit as st
 
@@ -52,10 +52,10 @@ def build_taxonomy_table(samples,target,rank):
         taxonomy_table = pd.merge(left=taxonomy_table, right=run_df, how='outer', left_index=True, right_index=True)
     taxonomy_table = taxonomy_table/taxonomy_table.sum()
     #taxonomy_table = order_df(taxonomy_table)
-    taxonomy_table.loc['target'] = target    
+    taxonomy_table.loc['target'] = target
     return taxonomy_table
 
-@st.cache
+#@st.cache
 def get_data_table(samples_a=["SRR15021134","SRR15021145"], samples_b=["SRR15021131","SRR15021132"], rank='phylum'):
     ''' build data table from two lists of sra accesions '''
     if not os.path.isdir('./cache'):
@@ -127,7 +127,7 @@ def confidence_ellipse(x, y, ax, n_std=3.0, facecolor='none', **kwargs):
 
 
 
-@st.cache
+#@st.cache
 def scale_dataframe(taxonomy_dataframe_P):
     cols = taxonomy_dataframe_P.columns
     ind = taxonomy_dataframe_P.index
@@ -138,7 +138,7 @@ def scale_dataframe(taxonomy_dataframe_P):
     taxonomy_dataframe_P.index = ind
     return taxonomy_dataframe_P
 
-@st.cache
+#@st.cache
 def plot_barplot(data,group_map):
     fig, taxonomy_bar = plt.subplots()
     print('will plot')
@@ -179,7 +179,7 @@ def plot_pca(data,samples_a):
     plt.tight_layout()
     return fig
 
-@st.cache
+#@st.cache
 def build_model(data,group_map):
     from scipy import interp
     from sklearn.datasets import make_classification
@@ -191,7 +191,7 @@ def build_model(data,group_map):
 
     phylum_feature_table = data.T
     #phylum_feature_table['location'] = phylum_feature_table.index.map(lambda x: 1 if group_map[x] == 'Rosja' else 0)
-    
+
     features = list(phylum_feature_table.columns[:-1])
     target = phylum_feature_table.columns[-1]
     X, y = np.array(phylum_feature_table[features]), np.array(phylum_feature_table[target])
