@@ -1,5 +1,5 @@
 matplotlib
-sklearn
+scikit-learn
 numpy
 scipy
 seaborn
